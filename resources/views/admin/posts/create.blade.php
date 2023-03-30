@@ -1,0 +1,62 @@
+@extends('layouts.admin')
+
+@section('content')
+<div class="container-fluid mt-4">
+    <div class="row justify-content-center">
+        <div class="col">
+            <h1>
+                Aggiungi nuovo Progett
+            </h1>
+        </div> 
+    </div>
+    @include('partials.error')
+    <div class="row justify-content-center">
+        <div class="col">
+            <form action="{{ route('admin.posts.store')  }}" method="POST" enctype="multipart/form-data">
+                @csrf
+
+                <div class="mb-3">
+                    <label for="title" class="form-label">Titolo</label>
+                    <input type="text" value="{{ old('title') }}" class="form-control" id="title" name="title"  maxlength="128" placeholder="inserisci il titolo del progetto">
+                </div>
+                <div class="mb-3">
+                    <label for="content" class="form-label">Contenuto</label>
+                    <textarea class="form-control" id="content" rows="10" name="content" required maxlength="4096" placeholder="inserisci il contenuto ">{{ old("content") }}</textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="img" class="form-label">immagine in evidenza</label>
+                    <input type="file"  class="form-control" id="img" name="img" accept="image/*"  placeholder="inserisci l'immagine in evidenza...">
+                </div>
+                <div class="mb-3">
+                    <label for="category_id">Categoria</label>
+                    <option value="">Nessuna categoria</option>
+                    <select name="category_id" id="category_id" class="form-select">
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id }}"{{ old("category->id") == $category->id ?  "selected" : "" }}>{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label d-block">Technology</label>
+                    {{ old("technologies") ? json_encode(old("technologies")) : "[]" }}
+                        @foreach ($technologies as $technology)
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" 
+                                    {{ in_array($technology->id, old("technologies",[])) ? "checked" : " "}}
+                                    type="checkbox" name="technologies[]" id="technology-{{ $technology->id }}" value="{{ $technology->id }}">
+                                <label class="form-check-label" for="technology-{{ $technology->id }}">{{ $technology->name }}</label>
+                            </div>
+                        @endforeach
+                </div>
+
+
+                <div> 
+                    <button type="submit" class="btn btn-success">AGGIUNGI</button>
+                </div>
+            </form> 
+        </div>
+        <a href="{{ route("admin.posts.index") }}" class="btn btn-primary my-4" >Torna indietro</a>
+    </div>
+</div>   
+@endsection
